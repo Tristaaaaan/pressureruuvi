@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pressureruvvi/functions/bluetooth_listener.dart';
+import 'package:pressureruvvi/functions/csv_generator.dart';
 
 class Home extends ConsumerWidget {
   const Home({super.key});
@@ -23,6 +24,43 @@ class Home extends ConsumerWidget {
         body: Center(
           child: Column(
             children: [
+              TextButton(
+                onPressed: () async {
+                  await requestPermissions();
+
+                  final status = await checkPermissionStatus();
+
+                  if (status) {
+                    List<Map<String, dynamic>> associateList = [
+                      {
+                        "number": 1,
+                        "lat": "14.97534313396318",
+                        "lon": "101.22998536005622"
+                      },
+                      {
+                        "number": 2,
+                        "lat": "14.97534313396318",
+                        "lon": "101.22998536005622"
+                      },
+                      {
+                        "number": 3,
+                        "lat": "14.97534313396318",
+                        "lon": "101.22998536005622"
+                      },
+                      {
+                        "number": 4,
+                        "lat": "14.97534313396318",
+                        "lon": "101.22998536005622"
+                      }
+                    ];
+
+                    exportCSV(associateList);
+                  } else {
+                    print("Permission not granted");
+                  }
+                },
+                child: const Text("Generate CSV"),
+              ),
               bluetoothDevices.when(
                 data: (data) {
                   return Expanded(
