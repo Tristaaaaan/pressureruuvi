@@ -4,8 +4,45 @@ import 'dart:async';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+// final bluetoothDevicesProvider =
+//     StreamProvider<List<BluetoothDevice>>((ref) async* {
+//   ref.read(isRefreshingProvider.notifier).update((state) => false);
+//   List<BluetoothDevice> devices = [];
+//   await FlutterBluePlus.adapterState
+//       .where((val) => val == BluetoothAdapterState.on)
+//       .first;
+
+//   await FlutterBluePlus.startScan(
+//     timeout: const Duration(seconds: 3),
+//   );
+
+//   var subscription = FlutterBluePlus.onScanResults.listen((results) {
+//     if (results.isNotEmpty) {
+//       ScanResult r = results.last;
+//       if (!r.device.isConnected &&
+//           !devices.contains(r.device) &&
+//           !r.device.advName.contains("Ruuvi")) {
+//         devices.add(r.device);
+//         print(r.device);
+//       }
+//     }
+//   }, onError: (e) => print(e));
+
+//   await FlutterBluePlus.isScanning.where((val) => val == false).first;
+
+//   FlutterBluePlus.cancelWhenScanComplete(subscription);
+
+//   ref.read(isRefreshingProvider.notifier).update((state) => false);
+
+//   yield devices;
+// });
+
+final bluetoothProviders = StateProvider.autoDispose<BluetoothListener>((ref) {
+  return BluetoothListener();
+});
+
 final bluetoothDevicesProvider =
-    StreamProvider<List<BluetoothDevice>>((ref) async* {
+    FutureProvider<List<BluetoothDevice>>((ref) async {
   List<BluetoothDevice> devices = [];
   await FlutterBluePlus.adapterState
       .where((val) => val == BluetoothAdapterState.on)
@@ -18,9 +55,10 @@ final bluetoothDevicesProvider =
   var subscription = FlutterBluePlus.onScanResults.listen((results) {
     if (results.isNotEmpty) {
       ScanResult r = results.last;
-      if (!r.device.isConnected) {
+      if (!r.device.isConnected &&
+          !devices.contains(r.device) &&
+          !r.device.advName.contains("Ruuvi")) {
         devices.add(r.device);
-        print(r.device);
       }
     }
   }, onError: (e) => print(e));
@@ -29,12 +67,21 @@ final bluetoothDevicesProvider =
 
   FlutterBluePlus.cancelWhenScanComplete(subscription);
 
-  yield devices;
+  return devices;
 });
 
-final bluetoothProviders = StateProvider.autoDispose<BluetoothListener>((ref) {
-  return BluetoothListener();
-});
+final connectedDevicesProvider = StreamProvider<List<BluetoothDevice>>(
+  (ref) async* {
+    List<BluetoothDevice> devices = [];
+
+    List<BluetoothDevice> devs = FlutterBluePlus.connectedDevices;
+    for (var d in devs) {
+      devices.add(d);
+    }
+
+    yield devices;
+  },
+);
 
 class BluetoothListener {
   Future<bool> connectToDevice(BluetoothDevice device) async {

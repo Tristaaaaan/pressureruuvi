@@ -52,10 +52,10 @@ Future<String> get _localFile async {
 
 void exportCSV(List<Map<String, dynamic>> list) async {
   List<List<dynamic>> rows = [];
-  rows.add(["number", "lat", "lon"]);
+  rows.add(["devices"]);
 
   for (var map in list) {
-    rows.add([map["number"], map["lat"], map["lon"]]);
+    rows.add([map["devices"]]);
   }
 
   String csv = const ListToCsvConverter().convert(rows);
