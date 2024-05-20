@@ -4,9 +4,12 @@ import 'dart:async';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+final bluetoothProviders = StateProvider.autoDispose<BluetoothListener>((ref) {
+  return BluetoothListener();
+});
+
 // final bluetoothDevicesProvider =
 //     StreamProvider<List<BluetoothDevice>>((ref) async* {
-//   ref.read(isRefreshingProvider.notifier).update((state) => false);
 //   List<BluetoothDevice> devices = [];
 //   await FlutterBluePlus.adapterState
 //       .where((val) => val == BluetoothAdapterState.on)
@@ -32,24 +35,18 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 //   FlutterBluePlus.cancelWhenScanComplete(subscription);
 
-//   ref.read(isRefreshingProvider.notifier).update((state) => false);
-
 //   yield devices;
 // });
 
-final bluetoothProviders = StateProvider.autoDispose<BluetoothListener>((ref) {
-  return BluetoothListener();
-});
-
-final bluetoothDevicesProvider =
-    FutureProvider<List<BluetoothDevice>>((ref) async {
+Future<List<BluetoothDevice>> performScan() async {
   List<BluetoothDevice> devices = [];
+
   await FlutterBluePlus.adapterState
       .where((val) => val == BluetoothAdapterState.on)
       .first;
 
   await FlutterBluePlus.startScan(
-    timeout: const Duration(seconds: 1),
+    timeout: const Duration(seconds: 5),
   );
 
   var subscription = FlutterBluePlus.onScanResults.listen((results) {
@@ -57,7 +54,7 @@ final bluetoothDevicesProvider =
       ScanResult r = results.last;
       if (!r.device.isConnected &&
           !devices.contains(r.device) &&
-          !r.device.advName.contains("Ruuvi")) {
+          r.device.advName.contains("Ruuvi")) {
         devices.add(r.device);
       }
     }
@@ -65,23 +62,36 @@ final bluetoothDevicesProvider =
 
   await FlutterBluePlus.isScanning.where((val) => val == false).first;
 
-  FlutterBluePlus.cancelWhenScanComplete(subscription);
+  subscription.cancel();
 
   return devices;
+}
+
+Stream<List<BluetoothDevice>> bluetoothDevicesStream() async* {
+  while (true) {
+    yield await performScan();
+    print("DETECTING BLUETOOTH DEVICE EVERY 10 SECONDS");
+    await Future.delayed(const Duration(seconds: 10));
+  }
+}
+
+final bluetoothDevicesProvider = StreamProvider<List<BluetoothDevice>>((ref) {
+  return bluetoothDevicesStream();
 });
 
-final connectedDevicesProvider = StreamProvider<List<BluetoothDevice>>(
-  (ref) async* {
-    List<BluetoothDevice> devices = [];
-
-    List<BluetoothDevice> devs = FlutterBluePlus.connectedDevices;
-    for (var d in devs) {
-      devices.add(d);
-    }
-
+Stream<List<BluetoothDevice>> connectedDevicesStream() async* {
+  while (true) {
+    final devices = FlutterBluePlus.connectedDevices;
     yield devices;
-  },
-);
+
+    print("DETECTING CONNECTED DEVICES EVERY 2 SECONDS");
+    await Future.delayed(const Duration(seconds: 2));
+  }
+}
+
+final connectedDevicesProvider = StreamProvider<List<BluetoothDevice>>((ref) {
+  return connectedDevicesStream();
+});
 
 class BluetoothListener {
   Future<bool> connectToDevice(BluetoothDevice device) async {
@@ -91,9 +101,6 @@ class BluetoothListener {
     var subscription =
         device.connectionState.listen((BluetoothConnectionState state) async {
       if (state == BluetoothConnectionState.disconnected) {
-        // 1. typically, start a periodic timer that tries to
-        //    reconnect, or just call connect() again right now
-        // 2. you must always re-discover services after disconnection!
         print(
             "Disconnected from device: ${device.advName} (${device.remoteId})");
       }

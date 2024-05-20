@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pressureruvvi/components/device_container.dart';
 import 'package:pressureruvvi/components/device_loading.dart';
 import 'package:pressureruvvi/functions/bluetooth_listener.dart';
+import 'package:pressureruvvi/home/data_listen.dart';
 
 final isRefreshingProvider = StateProvider<bool>((ref) => false);
 
@@ -28,26 +30,40 @@ class Home extends ConsumerWidget {
                   return const Center(child: Text("No device found"));
                 } else {
                   return Expanded(
-                    child: RefreshIndicator(
-                      onRefresh: () async {
-                        return await ref.refresh(bluetoothDevicesProvider);
+                    child: ListView.separated(
+                      separatorBuilder: (context, index) {
+                        return const SizedBox(
+                          height: 12,
+                        );
                       },
-                      child: ListView.separated(
-                        separatorBuilder: (context, index) {
-                          return const SizedBox(
-                            height: 12,
-                          );
-                        },
-                        itemCount: data.length,
-                        itemBuilder: (context, index) {
-                          final device = data[index];
+                      itemCount: data.length,
+                      itemBuilder: (context, index) {
+                        final device = data[index];
 
-                          return BluetoothDeviceContainer(
-                            device: device,
-                            connected: false,
-                          );
-                        },
-                      ),
+                        return BluetoothDeviceContainer(
+                          device: device,
+                          connected: false,
+                          onTap: () async {
+                            final isSuccess = await ref
+                                .read(bluetoothProviders)
+                                .connectToDevice(device);
+
+                            if (isSuccess) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Device Connected"),
+                                ),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Device Connection Failed"),
+                                ),
+                              );
+                            }
+                          },
+                        );
+                      },
                     ),
                   );
                 }
@@ -77,6 +93,13 @@ class Home extends ConsumerWidget {
                         return BluetoothDeviceContainer(
                           device: device,
                           connected: true,
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  DeviceScreen(device: device),
+                            ),
+                          ),
                         );
                       },
                     ),
@@ -113,6 +136,20 @@ class Home extends ConsumerWidget {
             //   },
             //   child: const Text("Generate CSV"),
             // ),
+
+            SizedBox(
+              height: 100,
+              child: IconButton(
+                onPressed: () {
+                  List<BluetoothDevice> devs = FlutterBluePlus.connectedDevices;
+                  for (var devices in devs) {
+                    print(
+                        "CONNECTED: ${devices.advName} (${devices.remoteId})");
+                  }
+                },
+                icon: const Text("Check Connected Devices"),
+              ),
+            ),
           ],
         ),
       ),

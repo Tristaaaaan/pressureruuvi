@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:pressureruvvi/functions/bluetooth_listener.dart';
 
 class BluetoothDeviceContainer extends ConsumerWidget {
   final BluetoothDevice device;
   final bool connected;
+  final void Function()? onTap;
 
   const BluetoothDeviceContainer({
     super.key,
     required this.device,
     required this.connected,
+    required this.onTap,
   });
 
   @override
@@ -53,25 +54,7 @@ class BluetoothDeviceContainer extends ConsumerWidget {
             ),
             if (!connected)
               InkWell(
-                onTap: () async {
-                  final isSuccess = await ref
-                      .read(bluetoothProviders)
-                      .connectToDevice(device);
-
-                  if (isSuccess) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Device Connected"),
-                      ),
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Device Connection Failed"),
-                      ),
-                    );
-                  }
-                },
+                onTap: onTap,
                 borderRadius: BorderRadius.circular(10),
                 child: IntrinsicWidth(
                   child: Container(
@@ -95,7 +78,7 @@ class BluetoothDeviceContainer extends ConsumerWidget {
                             style: TextStyle(color: Colors.white, fontSize: 16),
                           )
                         : const Text(
-                            'Disconnect',
+                            'View',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 16,
