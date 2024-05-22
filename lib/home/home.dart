@@ -4,7 +4,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pressureruvvi/components/device_container.dart';
 import 'package:pressureruvvi/components/device_loading.dart';
 import 'package:pressureruvvi/functions/bluetooth_listener.dart';
-import 'package:pressureruvvi/home/data_listen.dart';
 
 final isRefreshingProvider = StateProvider<bool>((ref) => false);
 
@@ -23,7 +22,13 @@ class Home extends ConsumerWidget {
       ),
       body: Center(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const Text(
+              "Bluetooth Devices",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            // SCANNED DEVICES
             bluetoothDevices.when(
               data: (data) {
                 if (data.isEmpty) {
@@ -43,25 +48,6 @@ class Home extends ConsumerWidget {
                         return BluetoothDeviceContainer(
                           device: device,
                           connected: false,
-                          onTap: () async {
-                            final isSuccess = await ref
-                                .read(bluetoothProviders)
-                                .connectToDevice(device);
-
-                            if (isSuccess) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Device Connected"),
-                                ),
-                              );
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Device Connection Failed"),
-                                ),
-                              );
-                            }
-                          },
                         );
                       },
                     ),
@@ -76,6 +62,14 @@ class Home extends ConsumerWidget {
                 );
               },
             ),
+            const SizedBox(
+              height: 10,
+            ),
+            const Text(
+              "Connected Bluetooth Devices",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            // CONNECTED DEVICES
             connectedBluetoothDevices.when(
               data: (data) {
                 if (data.isNotEmpty) {
@@ -93,13 +87,6 @@ class Home extends ConsumerWidget {
                         return BluetoothDeviceContainer(
                           device: device,
                           connected: true,
-                          onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  DeviceScreen(device: device),
-                            ),
-                          ),
                         );
                       },
                     ),

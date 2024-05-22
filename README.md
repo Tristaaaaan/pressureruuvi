@@ -1,3 +1,3 @@
 # pressureruvvi
 
-A new Flutter project.
+An application develop to receiving data from a Ruuvi sensor.
