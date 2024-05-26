@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pressureruvvi/components/device_container.dart';
 import 'package:pressureruvvi/components/device_loading.dart';
 import 'package:pressureruvvi/functions/bluetooth_listener.dart';
+import 'package:pressureruvvi/home/data_listen.dart';
 
 final isRefreshingProvider = StateProvider<bool>((ref) => false);
 
@@ -84,9 +85,22 @@ class Home extends ConsumerWidget {
                       itemBuilder: (context, index) {
                         final device = data[index];
 
-                        return BluetoothDeviceContainer(
-                          device: device,
-                          connected: true,
+                        return GestureDetector(
+                          onTap: () async {
+                            print(
+                                "CONNECTED DEVICES INFO REDIRECTING TO DEVICE SCREEN");
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    DeviceScreen(device: device),
+                              ),
+                            );
+                          },
+                          child: BluetoothDeviceContainer(
+                            device: device,
+                            connected: true,
+                          ),
                         );
                       },
                     ),
