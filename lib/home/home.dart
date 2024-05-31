@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pressureruvvi/components/device_container.dart';
 import 'package:pressureruvvi/components/device_loading.dart';
@@ -8,12 +9,21 @@ import 'package:pressureruvvi/home/data_listen.dart';
 
 final isRefreshingProvider = StateProvider<bool>((ref) => false);
 
-class Home extends ConsumerWidget {
+class Home extends HookConsumerWidget {
   const Home({super.key});
 
   // final BluetoothListener _bluetoothListener = BluetoothListener();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    Future<void> requestPermissions() async {
+      await requestPermissions();
+    }
+
+    useEffect(() {
+      requestPermissions();
+      return;
+    }, []);
+
     final bluetoothDevices = ref.watch(bluetoothDevicesProvider);
     final connectedBluetoothDevices = ref.watch(connectedDevicesProvider);
 
@@ -87,6 +97,8 @@ class Home extends ConsumerWidget {
 
                         return GestureDetector(
                           onTap: () async {
+                            // final status = await checkPermissionStatus();
+                            // if (status) {
                             print(
                                 "CONNECTED DEVICES INFO REDIRECTING TO DEVICE SCREEN");
                             Navigator.push(
@@ -96,6 +108,7 @@ class Home extends ConsumerWidget {
                                     DeviceScreen(device: device),
                               ),
                             );
+                            // }
                           },
                           child: BluetoothDeviceContainer(
                             device: device,
@@ -109,7 +122,9 @@ class Home extends ConsumerWidget {
                   return const Center(child: Text("No device connected"));
                 }
               },
-              error: (error, stackTrace) => Text(error.toString()),
+              error: (error, stackTrace) => Text(
+                error.toString(),
+              ),
               loading: () {
                 return const SizedBox(
                   height: 500,
@@ -117,27 +132,6 @@ class Home extends ConsumerWidget {
                 );
               },
             ),
-            // TextButton(
-            //   onPressed: () async {
-            //     await requestPermissions();
-
-            //     final status = await checkPermissionStatus();
-            //     print("DEVICES: $devices");
-            //     if (status) {
-            //       List<Map<String, dynamic>> associateList = [
-            //         {
-            //           "devices": devices,
-            //         },
-            //       ];
-
-            //       exportCSV(associateList);
-            //     } else {
-            //       print("Permission not granted");
-            //     }
-            //   },
-            //   child: const Text("Generate CSV"),
-            // ),
-
             SizedBox(
               height: 100,
               child: IconButton(
