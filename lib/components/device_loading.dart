@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pressureruvvi/components/skeleton.dart';
+import 'package:pressureruuvi/components/skeleton.dart';
 import 'package:shimmer/shimmer.dart';
 
 class BluetoothDevicesLoading extends StatelessWidget {

@@ -42,16 +42,14 @@ Future<bool> checkPermissionStatus() async {
 }
 
 Future<String> get _localFile async {
-  // final path = await _localPath;
-
   final String fileName = DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
 
   return '$fileName.csv';
 }
 
-Future<void> exportCSV(List<PressureData> pressureList) async {
+Future<String> exportCSV(List<PressureData> pressureList) async {
   List<List<dynamic>> rows = [];
-
+  String? statement;
   for (var map in pressureList) {
     // if (map.value.length == 128) {
     //   List<int?> pressureReading = [];
@@ -117,8 +115,8 @@ Future<void> exportCSV(List<PressureData> pressureList) async {
   String csv = const ListToCsvConverter().convert(rows);
 
   if (!await FlutterFileDialog.isPickDirectorySupported()) {
-    print("Picking directory not supported");
-    return;
+    const String statement = "Selected directory is not supported";
+    return statement;
   }
 
   final pickedDirectory = await FlutterFileDialog.pickDirectory();
@@ -131,23 +129,10 @@ Future<void> exportCSV(List<PressureData> pressureList) async {
       fileName: await _localFile, // Set CSV file name
       replace: true,
     );
-    print("CSV file exported successfully to: $filePath");
+    statement = "CSV file exported successfully to: $filePath";
   } else {
-    print("Export canceled or failed.");
+    statement = "Export failed";
   }
+
+  return statement;
 }
-
-// Future<String> get _localPath async {
-//   final directory =
-//       await getExternalStorageDirectory(); // await getApplicationDocumentsDirectory();
-
-//   return directory!.path;
-// }
-
-// Future<File> get _localFile async {
-//   final path = await _localPath;
-
-//   final String fileName = DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
-
-//   return File('$path/$fileName.csv');
-// }

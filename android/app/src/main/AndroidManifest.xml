@@ -31,7 +31,7 @@
     <application
         android:requestLegacyExternalStorage="true"
         android:preserveLegacyExternalStorage="true"
-        android:label="pressureruvvi"
+        android:label="pressureruuvi"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

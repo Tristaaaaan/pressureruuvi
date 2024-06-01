@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:pressureruvvi/functions/bluetooth_listener.dart';
-import 'package:pressureruvvi/home/data_listen.dart';
+import 'package:pressureruuvi/components/information_snackbar.dart';
+import 'package:pressureruuvi/functions/bluetooth_listener.dart';
+import 'package:pressureruuvi/home/data_listen.dart';
+
+final isLoadingProvider = StateProvider<bool>((ref) => false);
 
 class BluetoothDeviceContainer extends ConsumerWidget {
   final BluetoothDevice device;
+  // final BluetoothDeviceItem device;
   final bool connected;
 
   const BluetoothDeviceContainer({
@@ -16,9 +20,10 @@ class BluetoothDeviceContainer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isLoading = ref.watch(isLoadingProvider);
     return IntrinsicHeight(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 15),
+        margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
         padding: const EdgeInsets.symmetric(
           vertical: 10,
           horizontal: 10,
@@ -44,7 +49,7 @@ class BluetoothDeviceContainer extends ConsumerWidget {
                   height: 3,
                 ),
                 Text(
-                  "${device.remoteId}",
+                  device.remoteId.toString(),
                   style: const TextStyle(
                     fontSize: 14,
                     color: Colors.grey,
@@ -54,6 +59,7 @@ class BluetoothDeviceContainer extends ConsumerWidget {
             ),
             connected
                 ? InkWell(
+                    radius: 10,
                     onTap: () async {
                       print(
                           "CONNECTED DEVICES INFO REDIRECTING TO DEVICE SCREEN");
@@ -67,6 +73,7 @@ class BluetoothDeviceContainer extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(10),
                     child: IntrinsicWidth(
                       child: Container(
+                        width: 80,
                         margin: const EdgeInsets.symmetric(
                           horizontal: 5,
                           vertical: 4,
@@ -76,10 +83,10 @@ class BluetoothDeviceContainer extends ConsumerWidget {
                           vertical: 5,
                         ),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: const Color(0x00645aa4),
-                        ),
+                            borderRadius: BorderRadius.circular(10),
+                            color: const Color.fromARGB(255, 123, 123, 204)),
                         child: const Text(
+                          textAlign: TextAlign.center,
                           'View',
                           style: TextStyle(
                             color: Colors.white,
@@ -90,30 +97,31 @@ class BluetoothDeviceContainer extends ConsumerWidget {
                     ),
                   )
                 : InkWell(
-                    onTap: () async {
-                      print(
-                          " CONNECTING TO DEVICE: ${device.advName} (${device.remoteId})");
-                      final isSuccess = await ref
-                          .read(bluetoothProviders)
-                          .connectToDevice(device);
+                    radius: 10,
+                    onTap: isLoading
+                        ? () {}
+                        : () async {
+                            final loadingNotifier =
+                                ref.read(isLoadingProvider.notifier);
 
-                      if (isSuccess) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Device Connected"),
-                          ),
-                        );
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Device Connection Failed"),
-                          ),
-                        );
-                      }
-                    },
+                            loadingNotifier.update((state) => true);
+                            final isSuccess = await ref
+                                .read(bluetoothProviders)
+                                .connectToDevice(device);
+
+                            loadingNotifier.update((state) => false);
+                            if (isSuccess) {
+                              informationSnackBar(
+                                  context, Icons.check, "Device connected");
+                            } else {
+                              informationSnackBar(
+                                  context, Icons.warning, "Failed to connect");
+                            }
+                          },
                     borderRadius: BorderRadius.circular(10),
                     child: IntrinsicWidth(
                       child: Container(
+                        width: 80,
                         margin: const EdgeInsets.symmetric(
                           horizontal: 5,
                           vertical: 4,

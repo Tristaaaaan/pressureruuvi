@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:pressureruvvi/functions/csv_generator.dart';
+import 'package:pressureruuvi/components/information_snackbar.dart';
+import 'package:pressureruuvi/functions/csv_generator.dart';
 
 class DeviceScreen extends StatefulWidget {
   final BluetoothDevice device;
@@ -144,9 +145,9 @@ class DeviceScreenState extends State<DeviceScreen> {
           TextButton(
             onPressed: () async {
               // final status = await checkPermissionStatus();
-
+              final data = await exportCSV(pressure);
               // if (status) {
-              await exportCSV(pressure);
+              informationSnackBar(context, Icons.info, data);
               // } else {
               //   print("Permission not granted");
               // }
