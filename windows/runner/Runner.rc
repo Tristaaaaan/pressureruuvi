@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "pressureruvvi" "\0"
+            VALUE "FileDescription", "pressureruuvi" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "pressureruvvi" "\0"
+            VALUE "InternalName", "pressureruuvi" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2024 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "pressureruvvi.exe" "\0"
-            VALUE "ProductName", "pressureruvvi" "\0"
+            VALUE "OriginalFilename", "pressureruuvi.exe" "\0"
+            VALUE "ProductName", "pressureruuvi" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

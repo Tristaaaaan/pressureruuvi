@@ -23,7 +23,7 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace "com.example.pressureruvvi"
+    namespace "com.example.pressureruuvi"
     compileSdk flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
@@ -42,7 +42,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.pressureruvvi"
+        applicationId "com.example.pressureruuvi"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion 21
@@ -64,20 +64,20 @@ android {
     productFlavors {
         production {
             dimension "default"
-            resValue "string", "app_name", "PressureRuvvi"
+            resValue "string", "app_name", "PressureRuuvi"
             applicationIdSuffix ""
 
         }
         staging {
             dimension "default"
-            resValue "string", "app_name", "PressureRuvvi Staging"
+            resValue "string", "app_name", "PressureRuuvi Staging"
             applicationIdSuffix ".stg"
 
         }
 
         development {
             dimension "default"
-            resValue "string", "app_name", "PressureRuvvi Development"
+            resValue "string", "app_name", "PressureRuuvi Development"
             applicationIdSuffix ".dev"
         }
     }

@@ -1,4 +1,4 @@
-package com.example.pressureruvvi
+package com.example.pressureruuvi
 
 import io.flutter.embedding.android.FlutterActivity
 

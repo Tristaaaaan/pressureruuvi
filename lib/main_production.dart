@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pressureruvvi/app.dart';
+import 'package:pressureruuvi/app.dart';
 
 void main() {
   runApp(const MainApp());
