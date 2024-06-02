@@ -9,39 +9,6 @@ import 'package:pressureruuvi/home/data_listen.dart';
 
 final isRefreshingProvider = StateProvider<bool>((ref) => false);
 
-// Bluetooth Device Placeholder
-// class BluetoothDeviceItem {
-//   String advName;
-//   String remoteId;
-//   bool connected;
-//   BluetoothDeviceItem({
-//     required this.advName,
-//     required this.remoteId,
-//     required this.connected,
-//   });
-// }
-
-// Future<List<BluetoothDeviceItem>> bluetoothItem() async {
-//   await Future.delayed(const Duration(seconds: 10));
-//   List<BluetoothDeviceItem> devices = [
-//     BluetoothDeviceItem(advName: "Ruuvi 1", remoteId: "321", connected: true),
-//     BluetoothDeviceItem(advName: "Ruuvi 2", remoteId: "143", connected: true),
-//     BluetoothDeviceItem(advName: "Ruuvi 3", remoteId: "312", connected: false),
-//     BluetoothDeviceItem(advName: "Ruuvi 4", remoteId: "43d", connected: false),
-//     BluetoothDeviceItem(advName: "Ruuvi 5", remoteId: "1d3", connected: false),
-//     BluetoothDeviceItem(advName: "Ruuvi 6", remoteId: "r33", connected: false),
-//     BluetoothDeviceItem(advName: "Ruuvi 7", remoteId: "23d", connected: true),
-//     BluetoothDeviceItem(advName: "Ruuvi 8", remoteId: "gf3", connected: false),
-//   ];
-//   return devices;
-// }
-
-// final bluetoothItemsProvider =
-//     FutureProvider<List<BluetoothDeviceItem>>((ref) async {
-//   return bluetoothItem();
-// });
-// ORIGINAL CODE
-
 class Home extends HookConsumerWidget {
   const Home({super.key});
 
@@ -118,23 +85,6 @@ class Home extends HookConsumerWidget {
                         );
                       }).toList(),
                     );
-
-                    // ListView.separated(
-                    //   separatorBuilder: (context, index) {
-                    //     return const SizedBox(
-                    //       height: 12,
-                    //     );
-                    //   },
-                    //   itemCount: data.length,
-                    //   itemBuilder: (context, index) {
-                    //     final device = data[index];
-
-                    //     return BluetoothDeviceContainer(
-                    //       device: device,
-                    //       connected: false,
-                    //     );
-                    //   },
-                    // );
                   }
                 },
                 error: (error, stackTrace) => Text(error.toString()),
@@ -215,16 +165,6 @@ class Home extends HookConsumerWidget {
                     );
                   }
                 },
-                // ListView.separated(
-                //   separatorBuilder: (context, index) {
-                //     return const SizedBox(
-                //       height: 5,
-                //     );
-                //   },
-                //   itemCount: data.length,
-                //   itemBuilder: (context, index) {
-                //     final device = data[index];
-
                 error: (error, stackTrace) => Text(error.toString()),
                 loading: () {
                   return const SizedBox(
