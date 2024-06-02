@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:csv/csv.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
@@ -51,61 +52,24 @@ Future<String> exportCSV(List<PressureData> pressureList) async {
   List<List<dynamic>> rows = [];
   String? statement;
   for (var map in pressureList) {
-    // if (map.value.length == 128) {
-    //   List<int?> pressureReading = [];
-    //   int offset = 50000;
-    //   // CALCULATE
-
-    //   for (int i = 0; i < map.value.length - 4; i += 4) {
-    //     // Combine two bytes to form a 16-bit unsigned integer (little-endian)
-    //     int pressureRaw = map.value[i] + (map.value[i + 1] << 8);
-    //     int? pressure;
-
-    //     if (pressureRaw == 0xFFFF) {
-    //       // Indicate invalid or unavailable data
-    //       pressure = null;
-    //     } else {
-    //       pressure = pressureRaw + offset;
-    //     }
-
-    //     pressureReading.add(pressure);
-    //   }
-
-    //   // END
-
-    //   List<dynamic> row = [map.date];
-    //   row.addAll(pressureReading);
-    //   rows.add(row);
-    // }
-
-    List<int> pressureReadings = [];
+    List<double> pressureReadings = [];
     if (map.value.length != 128) {
       throw ArgumentError("Invalid data length, expected 128 bytes");
     } else {
       // Convert the list of integers to bytes
       List<int> data = map.value;
+      Uint8List receivedData = Uint8List.fromList(data);
+      ByteData byteData = ByteData.sublistView(receivedData);
 
-      // Define the number of readings and size of each chunk in bytes
-      int numReadings = 31;
-      int chunkSize = 4;
-
-      // Iterate over the data to extract each pressure reading
-      for (int i = 0; i < numReadings; i++) {
-        int startIndex = i * chunkSize;
-        List<int> pressureBytes = data.sublist(startIndex + 2, startIndex + 4);
-
-        // Convert bytes to integer (assuming big-endian format)
-        int pressure = 0;
-        for (int byte in pressureBytes) {
-          pressure = (pressure << 8) | byte;
-        }
-
-        // Adjust pressure value according to the sensor's encoding formula, if necessary
-        int pressureAdjusted = pressure + 50000; // Example adjustment
-
-        pressureReadings.add(pressureAdjusted);
+      // Extracting float values from byteData
+      for (int i = 0; i < 31; i++) {
+        pressureReadings
+            .add(byteData.getFloat32(i * 4, Endian.little).toDouble());
       }
+      // Extracting the last int value as a double
+      pressureReadings.add(byteData.getInt32(31 * 4, Endian.little).toDouble());
 
+      // Creating a row with date and pressure readings
       List<dynamic> row = [map.date];
       row.addAll(pressureReadings);
       rows.add(row);
