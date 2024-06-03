@@ -61,8 +61,6 @@ class BluetoothDeviceContainer extends ConsumerWidget {
                 ? InkWell(
                     radius: 10,
                     onTap: () async {
-                      print(
-                          "CONNECTED DEVICES INFO REDIRECTING TO DEVICE SCREEN");
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -87,7 +85,7 @@ class BluetoothDeviceContainer extends ConsumerWidget {
                             color: const Color.fromARGB(255, 123, 123, 204)),
                         child: const Text(
                           textAlign: TextAlign.center,
-                          'View',
+                          'Listen',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 16,
@@ -111,11 +109,15 @@ class BluetoothDeviceContainer extends ConsumerWidget {
 
                             loadingNotifier.update((state) => false);
                             if (isSuccess) {
-                              informationSnackBar(
-                                  context, Icons.check, "Device connected");
+                              if (context.mounted) {
+                                informationSnackBar(
+                                    context, Icons.check, "Device connected");
+                              }
                             } else {
-                              informationSnackBar(
-                                  context, Icons.warning, "Failed to connect");
+                              if (context.mounted) {
+                                informationSnackBar(context, Icons.warning,
+                                    "Failed to connect");
+                              }
                             }
                           },
                     borderRadius: BorderRadius.circular(10),
