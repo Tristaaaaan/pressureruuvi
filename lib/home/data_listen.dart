@@ -17,7 +17,6 @@ class DeviceScreen extends StatefulWidget {
 
 class DeviceScreenState extends State<DeviceScreen> {
   List<BluetoothService> services = [];
-  // Map<Guid, List<int>> characteristicValues = {};
   List<StreamSubscription<List<int>>> subscriptions = [];
   List<PressureData> pressure = [];
 
@@ -33,9 +32,6 @@ class DeviceScreenState extends State<DeviceScreen> {
       List<BluetoothService> services = await widget.device.discoverServices();
 
       _servicesStreamController.add(services);
-      // setState(() {
-      //   this.services = services;
-      // });
 
       for (var service in services) {
         for (var characteristic in service.characteristics) {
@@ -103,13 +99,10 @@ class DeviceScreenState extends State<DeviceScreen> {
         actions: [
           TextButton(
             onPressed: () async {
-              // final status = await checkPermissionStatus();
               final data = await exportCSV(pressure);
-              // if (status) {
-              informationSnackBar(context, Icons.info, data);
-              // } else {
-              //   print("Permission not granted");
-              // }
+              if (context.mounted) {
+                informationSnackBar(context, Icons.info, data);
+              }
             },
             child: const Text("Generate CSV"),
           ),

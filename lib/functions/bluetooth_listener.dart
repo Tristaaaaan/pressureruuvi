@@ -70,7 +70,7 @@ Future<List<BluetoothDevice>> performScan() async {
 Stream<List<BluetoothDevice>> bluetoothDevicesStream() async* {
   while (true) {
     yield await performScan();
-    print("DETECTING BLUETOOTH DEVICE EVERY 10 SECONDS");
+
     await Future.delayed(const Duration(seconds: 10));
   }
 }
@@ -84,7 +84,6 @@ Stream<List<BluetoothDevice>> connectedDevicesStream() async* {
     final devices = FlutterBluePlus.connectedDevices;
     yield devices;
 
-    print("DETECTING CONNECTED DEVICES EVERY 2 SECONDS");
     await Future.delayed(const Duration(seconds: 2));
   }
 }
@@ -95,36 +94,25 @@ final connectedDevicesProvider = StreamProvider<List<BluetoothDevice>>((ref) {
 
 class BluetoothListener {
   Future<bool> connectToDevice(BluetoothDevice device) async {
-    print("Connecting to device: ${device.advName} (${device.remoteId})");
-
     // Listen for disconnection
     var subscription =
         device.connectionState.listen((BluetoothConnectionState state) async {
-      if (state == BluetoothConnectionState.disconnected) {
-        print(
-            "Disconnected from device: ${device.advName} (${device.remoteId})");
-      }
+      if (state == BluetoothConnectionState.disconnected) {}
     });
 
     try {
       // Check if the device is connected
       if (device.connectionState == BluetoothConnectionState.connected) {
-        print("Device is already connected");
         return true;
       }
 
-      // Connect to the device
-      print("Connecting to device...");
       await device.connect();
-      print("CONNECTED");
 
       // Cancel to prevent duplicate listeners
       subscription.cancel();
 
       return true;
     } catch (e) {
-      print("Error connecting to device: $e");
-
       device.cancelWhenDisconnected(subscription, delayed: true, next: true);
       return false;
     }
