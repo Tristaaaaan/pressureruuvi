@@ -85,7 +85,7 @@ class BluetoothDeviceContainer extends ConsumerWidget {
                             color: const Color.fromARGB(255, 123, 123, 204)),
                         child: const Text(
                           textAlign: TextAlign.center,
-                          'View',
+                          'Listen',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 16,
