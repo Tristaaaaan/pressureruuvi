@@ -6,6 +6,7 @@ import 'package:pressureruuvi/components/device_container.dart';
 import 'package:pressureruuvi/components/device_loading.dart';
 import 'package:pressureruuvi/functions/bluetooth_listener.dart';
 import 'package:pressureruuvi/home/data_listen.dart';
+import 'package:pressureruuvi/home/ruuvi_devices.dart';
 
 final isRefreshingProvider = StateProvider<bool>((ref) => false);
 
@@ -30,6 +31,18 @@ class Home extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("PressureRuuvi"),
+        actions: [
+          TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const RuuviSensors(),
+                  ),
+                );
+              },
+              child: const Text("Observe")),
+        ],
       ),
       body: ListView(
         children: [
@@ -79,7 +92,7 @@ class Home extends HookConsumerWidget {
                   } else {
                     return Wrap(
                       children: data.map<Widget>((device) {
-                        return BluetoothDeviceContainer(
+                        return BluetoothDeviceContainers(
                           device: device,
                           connected: false,
                         );
@@ -109,6 +122,7 @@ class Home extends HookConsumerWidget {
               connectedBluetoothDevices.when(
                 data: (data) {
                   if (data.isNotEmpty) {
+                    ref.read(devicesProvider.notifier).update((state) => data);
                     return Wrap(
                       children: data.map<Widget>((device) {
                         return GestureDetector(
@@ -126,7 +140,7 @@ class Home extends HookConsumerWidget {
                             );
                             // }
                           },
-                          child: BluetoothDeviceContainer(
+                          child: BluetoothDeviceContainers(
                             device: device,
                             connected: true,
                           ),
