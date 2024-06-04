@@ -3,16 +3,15 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pressureruuvi/components/information_snackbar.dart';
 import 'package:pressureruuvi/functions/bluetooth_listener.dart';
-import 'package:pressureruuvi/home/data_listen.dart';
 
 final isLoadingProvider = StateProvider<bool>((ref) => false);
 
-class BluetoothDeviceContainer extends ConsumerWidget {
+class BluetoothDeviceContainers extends ConsumerWidget {
   final BluetoothDevice device;
   // final BluetoothDeviceItem device;
   final bool connected;
 
-  const BluetoothDeviceContainer({
+  const BluetoothDeviceContainers({
     super.key,
     required this.device,
     required this.connected,
@@ -61,12 +60,30 @@ class BluetoothDeviceContainer extends ConsumerWidget {
                 ? InkWell(
                     radius: 10,
                     onTap: () async {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DeviceScreen(device: device),
-                        ),
-                      );
+                      isLoading
+                          ? () {}
+                          : () async {
+                              final loadingNotifier =
+                                  ref.read(isLoadingProvider.notifier);
+
+                              loadingNotifier.update((state) => true);
+                              final isSuccess = await ref
+                                  .read(bluetoothProviders)
+                                  .disconnectToDevice(device);
+
+                              loadingNotifier.update((state) => false);
+                              if (isSuccess) {
+                                if (context.mounted) {
+                                  informationSnackBar(context, Icons.check,
+                                      "Device disconnected");
+                                }
+                              } else {
+                                if (context.mounted) {
+                                  informationSnackBar(context, Icons.warning,
+                                      "Failed to disconnect");
+                                }
+                              }
+                            };
                     },
                     borderRadius: BorderRadius.circular(10),
                     child: IntrinsicWidth(
@@ -85,7 +102,7 @@ class BluetoothDeviceContainer extends ConsumerWidget {
                             color: const Color.fromARGB(255, 123, 123, 204)),
                         child: const Text(
                           textAlign: TextAlign.center,
-                          'Listen',
+                          'Disconnect',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 16,
