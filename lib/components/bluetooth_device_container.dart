@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:pressureruuvi/components/information_snackbar.dart';
+import 'package:pressureruuvi/functions/csv_generator.dart';
 import 'package:pressureruuvi/functions/gather_data.dart';
 import 'package:pressureruuvi/services/state_provider.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
@@ -33,14 +35,19 @@ class BluetoothDeviceContainer extends ConsumerWidget {
     return IntrinsicHeight(
       child: Container(
         width: double.infinity,
-        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         decoration: BoxDecoration(
-          border: Border.all(
-            color: Colors.black,
-            width: 1,
+          border: Border(
+            left: BorderSide(
+              color: isIconClicked ? Colors.red : Colors.grey,
+              // Color of the border
+              width: 7, // Width of the border
+            ),
           ),
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: const BorderRadius.all(
+            Radius.circular(15),
+          ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,63 +55,85 @@ class BluetoothDeviceContainer extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  device.advName,
-                  style: const TextStyle(fontSize: 20),
-                ),
+                Row(children: [
+                  InkWell(
+                    borderRadius: BorderRadius.circular(5),
+                    onTap: onTap,
+                    child: IntrinsicWidth(
+                      child: isIconClicked
+                          ? Icon(
+                              Icons.stop,
+                              color: isIconClicked ? Colors.red : Colors.grey,
+                            )
+                          : Icon(
+                              Icons.play_arrow,
+                              color: isIconClicked ? Colors.red : Colors.grey,
+                            ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  Text(
+                    device.advName,
+                    style: const TextStyle(fontSize: 20),
+                  ),
+                ]),
                 IconButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (devicesDataInfo[device.advName] == null) {
                       print("Devices data info is null");
                     } else {
                       print(device.advName);
                       print(
                           "Length: ${devicesDataInfo[device.advName]!.length.toString()}");
-                    }
+                      List<PressureData> flattenedList =
+                          devicesDataInfo[device.advName]!
+                              .expand((i) => i)
+                              .toList();
+                      final bool success = await exportCSV(flattenedList);
 
-                    // for (final data in devicesDataInfo[sensorName]!) {
-                    //   for (final datas in data) {
-                    //     print(datas.value);
-                    //     print(datas.date);
-                    //   }
-                    // }
+                      if (success) {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Data exported successfully"),
+                            ),
+                          );
+                        }
+                        ref.read(devicesDataProvider.notifier).update(
+                              (state) => {
+                                ...state,
+                                device.advName: <List<
+                                    PressureData>>[], // Set to an empty list of lists
+                              },
+                            );
+                      } else {
+                        if (context.mounted) {
+                          informationSnackBar(
+                            context,
+                            Icons.warning,
+                            "Failed to export data",
+                          );
+                        }
+                      }
+                    }
                   },
-                  icon: const Icon(Icons.file_present),
+                  icon: Icon(
+                    Icons.save_alt_rounded,
+                    color: isIconClicked ? Colors.black : Colors.grey,
+                  ),
                 ),
               ],
             ),
             const SizedBox(
-              height: 10,
+              height: 5,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                InkWell(
-                  borderRadius: BorderRadius.circular(5),
-                  onTap: onTap,
-                  child: IntrinsicWidth(
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: Color.fromARGB(255, 194, 194, 194),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(5),
-                        ),
-                      ),
-                      padding: const EdgeInsets.all(5),
-                      child: isIconClicked
-                          ? const Icon(
-                              Icons.stop,
-                              color: Colors.white,
-                            )
-                          : const Icon(
-                              Icons.play_arrow,
-                              color: Colors.white,
-                            ),
-                    ),
-                  ),
-                ),
-              ],
+            const Divider(
+              thickness: 1,
+            ),
+            const SizedBox(
+              height: 5,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -137,7 +166,7 @@ class BluetoothDeviceContainer extends ConsumerWidget {
               ],
             ),
             const SizedBox(
-              height: 10,
+              height: 5,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

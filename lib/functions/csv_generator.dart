@@ -48,13 +48,13 @@ Future<String> get _localFile async {
   return '$fileName.csv';
 }
 
-Future<String> exportCSV(List<PressureData> pressureList) async {
+Future<bool> exportCSV(List<PressureData> pressureList) async {
   List<List<dynamic>> rows = [];
   String? statement;
   for (var map in pressureList) {
     List<double> pressureReadings = [];
     if (map.value.length != 128) {
-      throw ArgumentError("Invalid data length, expected 128 bytes");
+      return false;
     } else {
       // Convert the list of integers to bytes
       List<int> data = map.value;
@@ -79,24 +79,21 @@ Future<String> exportCSV(List<PressureData> pressureList) async {
   String csv = const ListToCsvConverter().convert(rows);
 
   if (!await FlutterFileDialog.isPickDirectorySupported()) {
-    const String statement = "Selected directory is not supported";
-    return statement;
+    return false;
   }
 
   final pickedDirectory = await FlutterFileDialog.pickDirectory();
 
   if (pickedDirectory != null) {
-    final filePath = await FlutterFileDialog.saveFileToDirectory(
+    await FlutterFileDialog.saveFileToDirectory(
       directory: pickedDirectory,
       data: utf8.encode(csv), // Encode CSV string to bytes
       mimeType: "text/csv", // Set MIME type for CSV files
       fileName: await _localFile, // Set CSV file name
       replace: true,
     );
-    statement = "CSV file exported successfully to: $filePath";
+    return true;
   } else {
-    statement = "Export failed";
+    return false;
   }
-
-  return statement;
 }
