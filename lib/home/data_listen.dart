@@ -150,7 +150,8 @@ class DeviceScreenState extends State<DeviceScreen> {
           onPressed: () async {
             final data = await exportCSV(pressure);
             if (context.mounted) {
-              informationSnackBar(context, Icons.info, data);
+              informationSnackBar(
+                  context, Icons.info, "Exported successfully.");
             }
             _resetTimer();
 

@@ -53,7 +53,7 @@ class Home extends HookConsumerWidget {
                 padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                 child: Text(
                   "Available Bluetooth Devices",
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                 ),
               ),
               // SCANNED DEVICES
@@ -115,7 +115,7 @@ class Home extends HookConsumerWidget {
                 padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                 child: Text(
                   "Connected Bluetooth Devices",
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                 ),
               ),
               // CONNECTED DEVICES
