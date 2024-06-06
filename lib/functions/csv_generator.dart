@@ -23,9 +23,7 @@ Future<void> requestPermissions() async {
   // Requesting permission for accessing the storage
 
   var status = await Permission.manageExternalStorage.request();
-  // You can also request multiple permissions at once like this:
-  // var status = await [Permission.storage, Permission.camera].request();
-  // Then handle each permission status accordingly.
+
   if (status.isGranted) {
     // Permission granted, proceed with accessing the storage
   } else if (status.isDenied) {
@@ -50,7 +48,7 @@ Future<String> get _localFile async {
 
 Future<bool> exportCSV(List<PressureData> pressureList) async {
   List<List<dynamic>> rows = [];
-  String? statement;
+
   for (var map in pressureList) {
     List<double> pressureReadings = [];
     if (map.value.length != 128) {
