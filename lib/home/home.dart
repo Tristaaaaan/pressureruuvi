@@ -13,7 +13,6 @@ final isRefreshingProvider = StateProvider<bool>((ref) => false);
 class Home extends HookConsumerWidget {
   const Home({super.key});
 
-  // final BluetoothListener _bluetoothListener = BluetoothListener();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     Future<void> requestPermissions() async {
@@ -27,7 +26,7 @@ class Home extends HookConsumerWidget {
 
     final bluetoothDevices = ref.watch(bluetoothDevicesProvider);
     final connectedBluetoothDevices = ref.watch(connectedDevicesProvider);
-    // final bluetoothItems = ref.watch(bluetoothItemsProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("PressureRuuvi"),
