@@ -25,7 +25,7 @@ class Home extends HookConsumerWidget {
     }, []);
 
     final bluetoothDevices = ref.watch(bluetoothDevicesProvider);
-    final connectedBluetoothDevices = ref.watch(connectedDevicesProvider);
+    final connectedBluetoothDevices = ref.watch(connectedDevicesProvider(ref));
 
     return Scaffold(
       appBar: AppBar(
@@ -121,7 +121,6 @@ class Home extends HookConsumerWidget {
               connectedBluetoothDevices.when(
                 data: (data) {
                   if (data.isNotEmpty) {
-                    ref.read(devicesProvider.notifier).update((state) => data);
                     return Wrap(
                       children: data.map<Widget>((device) {
                         return GestureDetector(
