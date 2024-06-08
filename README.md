@@ -43,7 +43,8 @@ flutter build appbundle --flavor production -t lib/main_production.dart
 ```
 
 ## Contact
-Provide ways for users to get in touch or seek help.
+
+For inquiries:
 
 * Email: markristanfabellar.pro@gmail.com
 * GitHub: [Tristaaaaan](https://github.com/Tristaaaaan)
