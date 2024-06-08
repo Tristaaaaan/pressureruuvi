@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:pressureruuvi/home/ruuvi_devices.dart';
 
 final bluetoothProviders = StateProvider.autoDispose<BluetoothListener>((ref) {
   return BluetoothListener();
@@ -49,17 +50,18 @@ final bluetoothDevicesProvider = StreamProvider<List<BluetoothDevice>>((ref) {
   return bluetoothDevicesStream();
 });
 
-Stream<List<BluetoothDevice>> connectedDevicesStream() async* {
+Stream<List<BluetoothDevice>> connectedDevicesStream(WidgetRef ref) async* {
   while (true) {
     final devices = FlutterBluePlus.connectedDevices;
     yield devices;
-
+    ref.read(devicesProvider.notifier).update((state) => devices);
     await Future.delayed(const Duration(seconds: 2));
   }
 }
 
-final connectedDevicesProvider = StreamProvider<List<BluetoothDevice>>((ref) {
-  return connectedDevicesStream();
+final connectedDevicesProvider =
+    StreamProvider.family<List<BluetoothDevice>, WidgetRef>((ref, widget) {
+  return connectedDevicesStream(widget);
 });
 
 class BluetoothListener {
