@@ -148,7 +148,11 @@ class DeviceScreenState extends State<DeviceScreen> {
       appBar: AppBar(title: Text(widget.device.advName), actions: [
         TextButton(
           onPressed: () async {
-            final data = await exportCSV(pressure);
+            final data = await exportCSV(
+              pressure,
+              widget.device.remoteId.toString(),
+              widget.device.advName,
+            );
             if (context.mounted) {
               informationSnackBar(
                   context, Icons.info, "Exported successfully.");

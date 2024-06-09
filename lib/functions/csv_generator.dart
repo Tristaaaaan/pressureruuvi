@@ -40,13 +40,16 @@ Future<bool> checkPermissionStatus() async {
   return status.isGranted;
 }
 
-Future<String> get _localFile async {
-  final String fileName = DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
+Future<String> _localFile(String remoteId, String deviceName) async {
+  final String fileName = deviceName +
+      remoteId +
+      DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
 
   return '$fileName.csv';
 }
 
-Future<bool> exportCSV(List<PressureData> pressureList) async {
+Future<bool> exportCSV(
+    List<PressureData> pressureList, String remoteId, String deviceName) async {
   List<List<dynamic>> rows = [];
 
   for (var map in pressureList) {
@@ -87,7 +90,7 @@ Future<bool> exportCSV(List<PressureData> pressureList) async {
       directory: pickedDirectory,
       data: utf8.encode(csv), // Encode CSV string to bytes
       mimeType: "text/csv", // Set MIME type for CSV files
-      fileName: await _localFile, // Set CSV file name
+      fileName: await _localFile(remoteId, deviceName), // Set CSV file name
       replace: true,
     );
     return true;
