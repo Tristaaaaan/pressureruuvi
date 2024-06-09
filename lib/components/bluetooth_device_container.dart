@@ -130,7 +130,7 @@ class BluetoothDeviceContainer extends ConsumerWidget {
                         }
                       } else {
                         informationSnackBar(context, Icons.warning,
-                            "Exporting of data is not possible when other sensors are still collecting data. Kindly stop them and try again");
+                            "Exporting of data is not possible while sensors are  collecting data. Kindly stop them and try again");
                       }
                     }
                   },
