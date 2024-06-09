@@ -84,7 +84,13 @@ class BluetoothDeviceContainer extends ConsumerWidget {
                 IconButton(
                   onPressed: () async {
                     if (devicesDataInfo[device.advName] == null) {
-                      print("Devices data info is null");
+                      if (context.mounted) {
+                        informationSnackBar(
+                          context,
+                          Icons.info,
+                          "The device is not collecting data. Kindly start the device and try again",
+                        );
+                      }
                     } else {
                       print(device.advName);
                       print(
