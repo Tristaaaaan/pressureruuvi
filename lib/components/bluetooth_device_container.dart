@@ -91,15 +91,16 @@ class BluetoothDeviceContainer extends ConsumerWidget {
                           devicesDataInfo[device.advName]!
                               .expand((i) => i)
                               .toList();
-                      final bool success = await exportCSV(flattenedList);
+                      final bool success = await exportCSV(
+                        flattenedList,
+                        device.remoteId.toString(),
+                        device.advName,
+                      );
 
                       if (success) {
                         if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Data exported successfully"),
-                            ),
-                          );
+                          informationSnackBar(context, Icons.info,
+                              "Data exported successfully");
                         }
                         ref.read(devicesDataProvider.notifier).update(
                               (state) => {
