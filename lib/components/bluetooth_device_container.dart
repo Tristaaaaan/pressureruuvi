@@ -5,6 +5,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pressureruuvi/components/information_snackbar.dart';
 import 'package:pressureruuvi/functions/csv_generator.dart';
 import 'package:pressureruuvi/functions/gather_data.dart';
+import 'package:pressureruuvi/home/ruuvi_devices.dart';
 import 'package:pressureruuvi/services/state_provider.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
@@ -20,6 +21,7 @@ class BluetoothDeviceContainer extends ConsumerWidget {
   final StopWatchTimer stopWatchTimer = StopWatchTimer();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final devicesList = ref.watch(devicesListProvider);
     final clickedIcons = ref.watch(clickedIconProvider);
     final isIconClicked = clickedIcons[device.advName] ?? false;
     final devicesDataInfo = ref.watch(devicesDataProvider);
@@ -91,32 +93,38 @@ class BluetoothDeviceContainer extends ConsumerWidget {
                           devicesDataInfo[device.advName]!
                               .expand((i) => i)
                               .toList();
-                      final bool success = await exportCSV(
-                        flattenedList,
-                        device.remoteId.toString(),
-                        device.advName,
-                      );
 
-                      if (success) {
-                        if (context.mounted) {
-                          informationSnackBar(context, Icons.info,
-                              "Data exported successfully");
-                        }
-                        ref.read(devicesDataProvider.notifier).update(
-                              (state) => {
-                                ...state,
-                                device.advName: <List<
-                                    PressureData>>[], // Set to an empty list of lists
-                              },
+                      if (devicesList.isEmpty) {
+                        final bool success = await exportCSV(
+                          flattenedList,
+                          device.remoteId.toString(),
+                          device.advName,
+                        );
+
+                        if (success) {
+                          if (context.mounted) {
+                            informationSnackBar(context, Icons.info,
+                                "Data exported successfully");
+                          }
+                          ref.read(devicesDataProvider.notifier).update(
+                                (state) => {
+                                  ...state,
+                                  device.advName: <List<
+                                      PressureData>>[], // Set to an empty list of lists
+                                },
+                              );
+                        } else {
+                          if (context.mounted) {
+                            informationSnackBar(
+                              context,
+                              Icons.warning,
+                              "Failed to export data",
                             );
-                      } else {
-                        if (context.mounted) {
-                          informationSnackBar(
-                            context,
-                            Icons.warning,
-                            "Failed to export data",
-                          );
+                          }
                         }
+                      } else {
+                        informationSnackBar(context, Icons.warning,
+                            "Exporting of data is not possible when other sensors are still collecting data. Kindly stop them and try again");
                       }
                     }
                   },

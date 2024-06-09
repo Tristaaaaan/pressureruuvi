@@ -9,14 +9,17 @@ final devicesProvider = StateProvider<List<BluetoothDevice>>((ref) {
   return [];
 });
 
+final devicesListProvider = StateProvider<List<String>>((ref) {
+  return [];
+});
+
 class RuuviSensors extends ConsumerWidget {
   const RuuviSensors({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final devices = ref.watch(devicesProvider);
-    final List<String> devicesList = [];
-
+    final devicesList = ref.watch(devicesListProvider);
     return Scaffold(
         appBar: AppBar(
           title: const Text("Ruuvi Sensors"),
@@ -33,9 +36,15 @@ class RuuviSensors extends ConsumerWidget {
                     onTap: () {
                       if (!devicesList.contains(device.advName)) {
                         discoverServices(device, ref, context);
-                        devicesList.add(device.advName);
+                        ref
+                            .read(devicesListProvider.notifier)
+                            .update((state) => [...state, device.advName]);
                       } else {
-                        devicesList.remove(device.advName);
+                        ref.read(devicesListProvider.notifier).update((state) =>
+                            state
+                                .where((deviceName) =>
+                                    deviceName != device.advName)
+                                .toList());
 
                         cancelAndDisposeSubscription(
                             device.advName, subscriptions);
