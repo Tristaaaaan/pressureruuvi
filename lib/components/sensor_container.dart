@@ -4,16 +4,14 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pressureruuvi/components/information_snackbar.dart';
 import 'package:pressureruuvi/functions/csv_generator.dart';
-import 'package:pressureruuvi/functions/gather_data.dart';
-import 'package:pressureruuvi/home/ruuvi_devices.dart';
 import 'package:pressureruuvi/services/state_provider.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
-class BluetoothDeviceContainer extends ConsumerWidget {
+class RuuviDevicesContainer extends ConsumerWidget {
   final void Function() onTap;
   final BluetoothDevice device;
 
-  BluetoothDeviceContainer({
+  RuuviDevicesContainer({
     super.key,
     required this.onTap,
     required this.device,
@@ -92,9 +90,6 @@ class BluetoothDeviceContainer extends ConsumerWidget {
                         );
                       }
                     } else {
-                      print(device.advName);
-                      print(
-                          "Length: ${devicesDataInfo[device.advName]!.length.toString()}");
                       List<PressureData> flattenedList =
                           devicesDataInfo[device.advName]!
                               .expand((i) => i)

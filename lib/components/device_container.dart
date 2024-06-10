@@ -3,15 +3,14 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pressureruuvi/components/information_snackbar.dart';
 import 'package:pressureruuvi/functions/bluetooth_listener.dart';
+import 'package:pressureruuvi/services/state_provider.dart';
 
-final isLoadingProvider = StateProvider<bool>((ref) => false);
-
-class BluetoothDeviceContainers extends ConsumerWidget {
+class BluetoothDeviceContainer extends ConsumerWidget {
   final BluetoothDevice device;
-  // final BluetoothDeviceItem device;
+
   final bool connected;
 
-  const BluetoothDeviceContainers({
+  const BluetoothDeviceContainer({
     super.key,
     required this.device,
     required this.connected,

@@ -5,10 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pressureruuvi/components/device_container.dart';
 import 'package:pressureruuvi/components/device_loading.dart';
 import 'package:pressureruuvi/functions/bluetooth_listener.dart';
-import 'package:pressureruuvi/home/data_listen.dart';
 import 'package:pressureruuvi/home/ruuvi_devices.dart';
-
-final isRefreshingProvider = StateProvider<bool>((ref) => false);
 
 class Home extends HookConsumerWidget {
   const Home({super.key});
@@ -91,7 +88,7 @@ class Home extends HookConsumerWidget {
                   } else {
                     return Wrap(
                       children: data.map<Widget>((device) {
-                        return BluetoothDeviceContainers(
+                        return BluetoothDeviceContainer(
                           device: device,
                           connected: false,
                         );
@@ -122,28 +119,14 @@ class Home extends HookConsumerWidget {
                 data: (data) {
                   if (data.isNotEmpty) {
                     return Wrap(
-                      children: data.map<Widget>((device) {
-                        return GestureDetector(
-                          onTap: () async {
-                            // final status = await checkPermissionStatus();
-                            // if (status) {
-                            // print(
-                            //     "CONNECTED DEVICES INFO REDIRECTING TO DEVICE SCREEN");
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    DeviceScreen(device: device),
-                              ),
-                            );
-                            // }
-                          },
-                          child: BluetoothDeviceContainers(
+                      children: data.map<Widget>(
+                        (device) {
+                          return BluetoothDeviceContainer(
                             device: device,
                             connected: true,
-                          ),
-                        );
-                      }).toList(),
+                          );
+                        },
+                      ).toList(),
                     );
                   } else {
                     return Container(
