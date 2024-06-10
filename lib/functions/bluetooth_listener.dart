@@ -3,7 +3,7 @@ import 'dart:async';
 
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:pressureruuvi/home/ruuvi_devices.dart';
+import 'package:pressureruuvi/services/state_provider.dart';
 
 final bluetoothProviders = StateProvider.autoDispose<BluetoothListener>((ref) {
   return BluetoothListener();
@@ -20,16 +20,18 @@ Future<List<BluetoothDevice>> performScan() async {
     timeout: const Duration(seconds: 5),
   );
 
-  var subscription = FlutterBluePlus.onScanResults.listen((results) {
-    if (results.isNotEmpty) {
-      ScanResult r = results.last;
-      if (!r.device.isConnected &&
-          !devices.contains(r.device) &&
-          r.device.advName.contains("Ruuvi")) {
-        devices.add(r.device);
+  var subscription = FlutterBluePlus.onScanResults.listen(
+    (results) {
+      if (results.isNotEmpty) {
+        ScanResult r = results.last;
+        if (!r.device.isConnected &&
+            !devices.contains(r.device) &&
+            r.device.advName.contains("Ruuvi")) {
+          devices.add(r.device);
+        }
       }
-    }
-  }, onError: (e) => print(e));
+    },
+  );
 
   await FlutterBluePlus.isScanning.where((val) => val == false).first;
 
