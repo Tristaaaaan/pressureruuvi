@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pressureruuvi/components/information_snackbar.dart';
 import 'package:pressureruuvi/functions/csv_generator.dart';
+import 'package:pressureruuvi/model/pressure_data_model.dart';
 import 'package:pressureruuvi/services/state_provider.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 

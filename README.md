@@ -20,7 +20,7 @@ git clone https://github.com/Tristaaaaan/pressureruuvi
 
 2. Open the project on your preferred IDE and add dependencies:
 ```
-flutter pub add
+flutter pub get
 ```
 
 3. Run the project:
@@ -41,6 +41,11 @@ flutter build apk release --flavor production -t lib/main_production.dart
 ```
 flutter build appbundle --flavor production -t lib/main_production.dart
 ```
+
+## Technology Tools
+
+* Dart
+* Flutter
 
 ## Contact
 

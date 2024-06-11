@@ -104,7 +104,7 @@ class BluetoothDeviceContainer extends ConsumerWidget {
                           'Disconnect',
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 16,
+                            fontSize: 14,
                           ),
                         ),
                       ),
@@ -152,6 +152,7 @@ class BluetoothDeviceContainer extends ConsumerWidget {
                             borderRadius: BorderRadius.circular(10),
                             color: const Color(0xFF313167)),
                         child: const Text(
+                          textAlign: TextAlign.center,
                           'Connect',
                           style: TextStyle(color: Colors.white, fontSize: 16),
                         ),

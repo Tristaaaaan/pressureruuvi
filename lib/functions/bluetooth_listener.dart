@@ -17,7 +17,7 @@ Future<List<BluetoothDevice>> performScan() async {
       .first;
 
   await FlutterBluePlus.startScan(
-    timeout: const Duration(seconds: 5),
+    timeout: const Duration(seconds: 4),
   );
 
   var subscription = FlutterBluePlus.onScanResults.listen(
@@ -44,7 +44,7 @@ Stream<List<BluetoothDevice>> bluetoothDevicesStream() async* {
   while (true) {
     yield await performScan();
 
-    await Future.delayed(const Duration(seconds: 10));
+    await Future.delayed(const Duration(seconds: 4));
   }
 }
 
