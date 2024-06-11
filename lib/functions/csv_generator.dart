@@ -5,15 +5,7 @@ import 'package:csv/csv.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
-
-class PressureData {
-  final int date;
-  final List<int> value;
-  PressureData({
-    required this.date,
-    required this.value,
-  });
-}
+import 'package:pressureruuvi/model/pressure_data_model.dart';
 
 Future<void> requestPermissions() async {
   if (await Permission.manageExternalStorage.isGranted) {

@@ -4,9 +4,10 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:pressureruuvi/functions/csv_generator.dart';
+import 'package:pressureruuvi/model/pressure_data_model.dart';
 import 'package:pressureruuvi/services/state_provider.dart';
 
+// Dispose the function which enables a single sensor to gather data
 void cancelAndDisposeSubscription(String containerName,
     Map<String, StreamSubscription<List<int>>> subscriptions) {
   if (subscriptions.containsKey(containerName)) {

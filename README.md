@@ -20,7 +20,7 @@ git clone https://github.com/Tristaaaaan/pressureruuvi
 
 2. Open the project on your preferred IDE and add dependencies:
 ```
-flutter pub add
+flutter pub get
 ```
 
 3. Run the project:
