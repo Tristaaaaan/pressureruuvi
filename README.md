@@ -42,6 +42,11 @@ flutter build apk release --flavor production -t lib/main_production.dart
 flutter build appbundle --flavor production -t lib/main_production.dart
 ```
 
+## Technology Tools
+
+* Dart
+* Flutter
+
 ## Contact
 
 For inquiries:
