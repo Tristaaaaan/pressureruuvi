@@ -36,8 +36,6 @@ Future<void> discoverServices(
 
   List<BluetoothService> services = await device.discoverServices();
 
-  // _servicesStreamController.add(services);
-
   for (var service in services) {
     for (var characteristic in service.characteristics) {
       // Subscribe to notifications if the characteristic supports it

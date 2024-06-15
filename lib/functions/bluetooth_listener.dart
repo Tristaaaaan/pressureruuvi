@@ -67,6 +67,7 @@ final connectedDevicesProvider =
 });
 
 class BluetoothListener {
+  // Connecting to a bluetooth device
   Future<bool> connectToDevice(BluetoothDevice device) async {
     // Listen for disconnection
     var subscription =
@@ -92,6 +93,7 @@ class BluetoothListener {
     }
   }
 
+  // Disconnecting from a bluetooth device
   Future<bool> disconnectToDevice(BluetoothDevice device) async {
     try {
       // Disconnect the device
