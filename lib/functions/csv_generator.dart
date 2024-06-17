@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pressureruuvi/model/pressure_data_model.dart';
 
+// Ask permission status on Android 12 and below
 Future<void> requestPermissions() async {
   if (await Permission.manageExternalStorage.isGranted) {
   } else {
@@ -25,6 +26,7 @@ Future<void> requestPermissions() async {
   }
 }
 
+// Check permission status on Android 12 and below
 Future<bool> checkPermissionStatus() async {
   // Checking permission status for accessing the storage
   var status = await Permission.manageExternalStorage.status;
