@@ -37,7 +37,7 @@ class Home extends HookConsumerWidget {
                   ),
                 );
               },
-              child: const Text("Observe")),
+              child: const Text("View All")),
         ],
       ),
       body: ListView(

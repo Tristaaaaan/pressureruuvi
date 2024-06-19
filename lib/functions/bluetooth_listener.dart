@@ -93,15 +93,28 @@ class BluetoothListener {
     }
   }
 
-  // Disconnecting from a bluetooth device
-  Future<bool> disconnectToDevice(BluetoothDevice device) async {
+  Future<bool> disconnectFromDevice(BluetoothDevice device) async {
     try {
-      // Disconnect the device
-      await device.disconnect();
+      // Check if the device is connected before attempting to disconnect
+      if (device.isConnected) {
+        // Disconnect the device
+        await device.disconnect();
 
-      return true;
+        // Verify the disconnection (this might depend on your Bluetooth library)
+        if (!device.isConnected) {
+          print("Device disconnected successfully");
+          return true;
+        } else {
+          print("Failed to disconnect the device");
+          return false;
+        }
+      } else {
+        print("Device is already disconnected");
+        return true;
+      }
     } catch (e) {
       // Handle disconnection error if needed
+      print("Error disconnecting the device: $e");
       return false;
     }
   }

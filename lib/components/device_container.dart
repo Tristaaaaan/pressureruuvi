@@ -68,7 +68,7 @@ class BluetoothDeviceContainer extends ConsumerWidget {
                               loadingNotifier.update((state) => true);
                               final isSuccess = await ref
                                   .read(bluetoothProviders)
-                                  .disconnectToDevice(device);
+                                  .disconnectFromDevice(device);
 
                               loadingNotifier.update((state) => false);
                               if (isSuccess) {
